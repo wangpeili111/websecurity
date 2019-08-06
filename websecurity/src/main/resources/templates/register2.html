@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>index</title>
+<meta charset="utf-8" name="viewport"
+	content="width=device-width, initial-scale=1.0">
+	<meta name="_csrf" th:content="${_csrf.token}">
+	<meta name="_csrf_header" th:content="${_csrf.headerName}">
+<!-- 引入 Bootstrap -->
+<link href="/css/bootstrap.min.css" rel="stylesheet">
+<!-- HTML5 Shiv 和 Respond.js 用于让 IE8 支持 HTML5元素和媒体查询 -->
+<!-- 注意： 如果通过 file://  引入 Respond.js 文件，则该文件无法起效果 -->
+<!--[if lt IE 9]>
+    <script src="./js/html5shiv.js"></script>
+    <script src="./js/respond.min.js"></script>
+    <![endif]-->
+<link href="/css/signin.css" rel="stylesheet" />
+
+
+</head>
+<body>
+
+
+	<div class="container">
+
+		<form class="form-signin" role="form">
+			<h2>登录2</h2>
+			<p>
+				<input class="form-control" type="text" name="username"
+					id="username" placeholder="用户账号">
+			</p>
+			<p>
+				<input class="form-control" type="password" name="password"
+					id="password" placeholder="用户密码">
+			</p>
+			<p>
+				<label class="sr-only">用户角色</label> <select name="authority"
+					class="form-control form-select" id="authority">
+					<option>admin</option>
+					<option>user</option>
+				</select>
+			</p>
+
+			<input type="hidden" name="${_csrf.parameterName}"
+				value="${_csrf.token}" />
+
+			<h1 th:text="${message}" style="color: red"></h1>
+		</form>
+		<div class="form-signin">
+			<button class="btn btn-primary btn-block" id="btnregister">get注册账号</button>
+		</div>
+		<div class="form-signin">
+			<button class="btn btn-primary btn-block" id="postregister">post注册账号</button>
+		</div>
+
+
+
+
+	</div>
+
+
+
+	<script src="/webjars/jquery/jquery.min.js"></script>
+	<script src="/js/jquery.cookie.min.js"></script>
+
+	<script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+	<script>
+		/**
+		 $("#btnregister").click(function () {
+		 $.get("/loginuser/adduser?username="+$("#postusername").val()+"&password="+$("#postpassword").val(),
+		 function(data,status){
+		 if(data==="save"){
+		 $("#formerror").html("<h1 class='text-success'>注册成功</h1>");
+		 }else{
+		 $("#formerror").html("<h1 class='text-danger'>注册失败</h1>");
+		 }
+		 });
+		 });
+		 **/
+		 
+		 var token=$("meta[name='_csrf']").attr("content");
+		 var header=$("meta[name='_csrf_header']").attr("content");
+		 $(document).ajaxSend(function(e,xhr,options){
+			 xhr.setRequestHeader(header,token);
+		 });
+		
+		$("#btnregister").click(function() {
+			$.ajax({
+				type : "get",
+				url : "/register/adduser",
+				data : {
+				
+			
+					username : $("#username").val(),
+					password : $("#password").val(),
+					authority : $("#authority").val()
+				},
+				error : function(data) {
+					console.log(data)
+				},
+				success : function(data) {
+					console.log(data)
+				}
+			});
+		});
+		$("#postregister").click(function() {
+			$.ajax({
+				type : "post",
+				url : "/register/adduser",
+				data : {
+					
+					username : $("#username").val(),
+					password : $("#password").val(),
+					authority : $("#authority").val()
+				},
+				error : function(data) {
+					console.log(data)
+				},
+				success : function(data) {
+					console.log(data)
+				}
+			});
+		});
+	</script>
+
+
+</body>
+
+</html>

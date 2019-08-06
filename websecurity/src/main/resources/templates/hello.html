@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
+<title>index</title>
+</head>
+<body>
+	<h1 th:inline="text" id='text'>my name is
+		[[${#httpServletRequest.remoteUser}]]</h1>
+	<form th:action="@{/logout}" method="post">
+		<input type="submit" value="logout" />
+	</form>
+	<button onclick="logouthtml()">postlogout</button>
+	<script src="/webjars/jquery/jquery.min.js"></script>
+	<script>
+		document.cookie = "username="
+				+ document.getElementById("text").innerHTML
+				+ "; expires=Thu, 18 Dec 2043 12:00:00 GMT; path=/";
+		console.log(document.cookie);
+		//window.location.assign("/test.html")
+		
+		 
+		 var token=$("meta[name='_csrf']").attr("content");
+		 var header=$("meta[name='_csrf_header']").attr("content");
+		 $(document).ajaxSend(function(e,xhr,options){
+			 xhr.setRequestHeader(header,token);
+		 });
+		 
+		function logouthtml() {
+			$.ajax({
+				type : "post",
+				url : "/logout",
+				data : {},
+				error : function(data) {
+					console.log(data)
+				},
+				success : function(data) {
+					console.log(data)
+					  window.location.assign("/")
+				}
+			});
+		}
+	</script>
+</body>
+</html>
